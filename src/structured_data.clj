@@ -1,4 +1,9 @@
+; Exercises from
+; http://iloveponies.github.io/120-hour-epic-sax-marathon/structured-data.html
+
 (ns structured-data)
+
+
 
 (defn do-a-thing [x]
   (let [xx (+ x x)]
@@ -13,6 +18,8 @@
 (defn spiff-destructuring [v]
   (let [[a b c] v]
     (+ a c)))
+
+;
 
 (defn point [x y]
   [x y])
@@ -42,6 +49,10 @@
 (defn contains-rectangle? [outer inner]
    (let [[p1 p2] inner]
    (and (contains-point? outer p1) (contains-point? outer p2))))
+
+
+
+;
 
 (defn title-length [book]
   (count (:title book)))
@@ -73,7 +84,7 @@
   (or (apply <= a-seq) (apply >= a-seq)))
 
 (defn stars [n]
-  (str (repeat n "*")))
+  (apply str (repeat n "*")))
 
 (defn toggle [a-set elem]
   (if (contains? a-set elem)
@@ -81,7 +92,10 @@
     (conj a-set elem)))
 
 (defn contains-duplicates? [a-seq]
-  (= (count a-seq) (set a-seq)))
+  (not (= (count a-seq) (count (set a-seq)))))
+
+
+;
 
 (defn old-book->new-book [book]
   (assoc book :authors (set (:authors book))))
@@ -91,7 +105,6 @@
       (:authors)
       (contains? author)))
 
-  ;(contains? (:authors (old-book->new-book book)) author))
 
 (defn authors [books]
    (set (apply concat (map :authors books))))
@@ -100,37 +113,61 @@
 (defn all-author-names [books]
     (set (map :name (authors books))))
 
-;(defn all-author-names [books]
-;  (let [author-names
-;         (fn [book] (map :name (:authors book)))]
-;    (set (apply concat (map author-names books)))))
 
 (defn author->string [author]
-  :-)
+  (if (contains? author :birth-year)
+    (str (author :name ) " (" (author :birth-year) " - " (author :death-year) ")")
+    (str (author :name ))))
+
 
 (defn authors->string [authors]
-  :-)
+  (apply str
+    (interpose ", "
+      (map author->string authors))))
+
 
 (defn book->string [book]
-  :-)
+  (str (:title book) ", written by " (authors->string (:authors book))))
+
 
 (defn books->string [books]
-  :-)
+  (if (= 0 (count books))
+    "No books."
+    (apply str
+      (concat (interpose ". " (map book->string books)) ["."]))))
+
 
 (defn books-by-author [author books]
-  :-)
+  (let [filt-author (fn [x] (has-author? x author))]
+    (filter filt-author books)))
+
 
 (defn author-by-name [name authors]
-  :-)
+  (let [filt-name (fn [x] (= (:name x) name))]
+    (first (filter filt-name authors))))
+
 
 (defn living-authors [authors]
-  :-)
+  (filter alive? authors))
+
 
 (defn has-a-living-author? [book]
-  :-)
+  (not (empty? (living-authors (:authors book)))))
+
 
 (defn books-by-living-authors [books]
-  :-)
+  (filter has-a-living-author? books))
+
+
+
+
+
+
+
+
+
+
+
 
 ; %________%
 
